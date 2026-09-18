@@ -1,0 +1,161 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Document defaults and shared interactive states */
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+html {
+  scrollbar-color: var(--color-accent) transparent;
+  scrollbar-width: thin;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(page-content) {
+  animation: page-fade-out 120ms ease-in both;
+}
+
+::view-transition-new(page-content) {
+  animation: page-fade-in 180ms ease-out both;
+}
+
+@keyframes page-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.page-view {
+  view-transition-name: page-content;
+}
+
+.page-view--fallback-transition {
+  animation: page-fade-in 180ms ease-out both;
+}
+
+body {
+  min-width: 0;
+  margin: 0;
+  background: var(--color-page);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  transition:
+    background-color 500ms ease-in-out,
+    color 500ms ease-in-out;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-accent);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--color-accent) 70%,
+    transparent
+  );
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+a:active {
+  color: var(--accent-sky);
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+@media (hover: hover) {
+  a:hover {
+    color: var(--color-text);
+    text-decoration-color: currentColor;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0 0 var(--space-4);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: var(--text-hero);
+  line-height: var(--leading-hero);
+  letter-spacing: -0.05em;
+}
+
+h2 {
+  font-size: var(--text-section-title);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  font-size: var(--text-body);
+  line-height: var(--leading-heading);
+}
+
+h4 {
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+}
+
+p {
+  max-width: 65ch;
+  color: var(--color-text-muted);
+}
+
+/* Preserve usability for visitors who request reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page-content),
+  ::view-transition-new(page-content) {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
