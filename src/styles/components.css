@@ -1574,12 +1574,51 @@
     flex-direction: column;
   }
 
-  .resume-page__actions {
-    justify-content: flex-start;
+  .resume-page__toggle {
+    display: flex;
+    width: 100%;
   }
 
+  .resume-page__toggle button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: var(--space-2);
+    font-size: 0.8rem;
+    white-space: normal;
+  }
+
+  .resume-page > * {
+    min-width: 0;
+  }
+
+  .resume-page__toolbar,
+  .resume-page__actions {
+    width: 100%;
+  }
+
+  .resume-page__actions a {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  /* Embedded PDFs render at desktop size on phones; the native viewer via Open PDF reads better. */
   .resume-page__viewer {
-    min-height: 48rem;
+    display: none;
+  }
+}
+
+@media (max-width: 34rem) {
+  .site-header__home-path,
+  .contact-card__footer-link,
+  .project-card__links a {
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .contact-card .contribution-card__github-link {
+    width: 2.75rem;
+    height: 2.75rem;
   }
 }
 
