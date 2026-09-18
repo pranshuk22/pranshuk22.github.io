@@ -1602,9 +1602,9 @@
     justify-content: center;
   }
 
-  /* Embedded PDFs render at desktop size on phones; the native viewer via Open PDF reads better. */
   .resume-page__viewer {
-    display: none;
+    height: 70vh;
+    min-height: 24rem;
   }
 }
 
