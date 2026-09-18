@@ -1,9 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { defaultResumeVariant, resumeVariants, type ResumeVariant } from '../data/resume'
 
 type ResumeStatus = 'checking' | 'available' | 'missing'
 
 const resumeVariantOrder: ResumeVariant[] = ['software', 'ml']
+
+const phoneQuery = '(max-width: 42rem)'
+
+function subscribeToPhoneQuery(onChange: () => void) {
+  const query = window.matchMedia(phoneQuery)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+
+function useIsPhone() {
+  return useSyncExternalStore(
+    subscribeToPhoneQuery,
+    () => window.matchMedia(phoneQuery).matches,
+    () => false,
+  )
+}
 
 function DocumentIcon() {
   return (
@@ -35,6 +51,7 @@ function ResumePage() {
   const [status, setStatus] = useState<ResumeStatus>('checking')
   const [checkedVariant, setCheckedVariant] = useState<ResumeVariant | null>(null)
   const resume = resumeVariants[variant]
+  const isPhone = useIsPhone()
 
   if (checkedVariant !== variant && status !== 'checking') {
     setStatus('checking')
@@ -97,7 +114,7 @@ function ResumePage() {
 
             <div className="resume-page__viewer">
               <iframe
-                src={`${resume.path}#view=FitH&toolbar=1`}
+                src={`${resume.path}#view=FitH&toolbar=${isPhone ? 0 : 1}&navpanes=0`}
                 title={`Pranshu Kumar ${resume.label} resume`}
               />
             </div>
