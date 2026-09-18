@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html {
+        background: #1e1e2e;
+        color-scheme: dark;
+      }
+
+      html[data-theme="latte"] {
+        background: #eff1f5;
+        color-scheme: light;
+      }
+
+      html[data-theme="frappe"] {
+        background: #303446;
+      }
+
+      html[data-theme="cortado"] {
+        background: #24273a;
+      }
+    </style>
+    <script>
+      (() => {
+        const palettes = ['latte', 'frappe', 'cortado', 'mocha']
+        let palette
+
+        try {
+          palette = localStorage.getItem('palette')
+        } catch {
+          // Use the system preference when storage is unavailable.
+        }
+
+        if (!palettes.includes(palette)) {
+          palette = matchMedia('(prefers-color-scheme: light)').matches
+            ? 'latte'
+            : 'mocha'
+        }
+
+        document.documentElement.dataset.theme = palette
+      })()
+    </script>
+    <meta
+      name="description"
+      content="View or download Pranshu Kumar's resume."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Pranshu Kumar | Resume</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
