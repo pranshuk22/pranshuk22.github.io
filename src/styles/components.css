@@ -1602,9 +1602,11 @@
     justify-content: center;
   }
 
+  /* Sized to the resume page's proportions so the PDF viewer adds little empty space. */
   .resume-page__viewer {
-    height: 70vh;
-    min-height: 24rem;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1 / 1.42;
   }
 }
 
