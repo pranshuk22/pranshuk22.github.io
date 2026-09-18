@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TerminalOverlay from './TerminalOverlay'
 import ThemeMenu from './ThemeMenu'
 import type { Page } from '../App'
@@ -16,6 +16,7 @@ const pageDetails: Record<Page, { label: string; href: string; path: string }> =
 }
 
 const terminalMinWidthQuery = '(min-width: 40rem)'
+const mobileMenuQuery = '(max-width: 34rem)'
 
 function SiteHeader({ currentPage, onNavigate }: SiteHeaderProps) {
   const currentPath = pageDetails[currentPage].path
@@ -24,6 +25,8 @@ function SiteHeader({ currentPage, onNavigate }: SiteHeaderProps) {
     typeof window !== 'undefined' && window.matchMedia(terminalMinWidthQuery).matches
   ))
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const prefetchLinks = Object.entries(pageDetails)
@@ -53,6 +56,35 @@ function SiteHeader({ currentPage, onNavigate }: SiteHeaderProps) {
     return () => query.removeEventListener('change', updateCanOpenTerminal)
   }, [])
 
+  useEffect(() => {
+    if (!isMenuOpen) return
+
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setIsMenuOpen(false)
+    }
+
+    const query = window.matchMedia(mobileMenuQuery)
+    function closeWhenWide() {
+      if (!query.matches) setIsMenuOpen(false)
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    document.addEventListener('keydown', closeOnEscape)
+    query.addEventListener('change', closeWhenWide)
+
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer)
+      document.removeEventListener('keydown', closeOnEscape)
+      query.removeEventListener('change', closeWhenWide)
+    }
+  }, [isMenuOpen])
+
   function handleHomeClick() {
     if (currentPage !== 'home') {
       onNavigate('home', pageDetails.home.href)
@@ -68,7 +100,7 @@ function SiteHeader({ currentPage, onNavigate }: SiteHeaderProps) {
   }
 
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef} data-menu-open={isMenuOpen}>
       <div className="site-header__inner">
         <div className="site-header__brand" aria-label={`Current path: ${currentPath}`}>
           <button
@@ -92,13 +124,27 @@ function SiteHeader({ currentPage, onNavigate }: SiteHeaderProps) {
           />
         </div>
 
-        <nav className="site-header__nav" aria-label="Primary navigation">
+        <button
+          type="button"
+          className="site-header__menu-button"
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMenuOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setIsMenuOpen((open) => !open)}
+        >
+          <span className="site-header__menu-bar" aria-hidden="true" />
+          <span className="site-header__menu-bar" aria-hidden="true" />
+          <span className="site-header__menu-bar" aria-hidden="true" />
+        </button>
+
+        <nav className="site-header__nav" id="primary-navigation" aria-label="Primary navigation">
           {(Object.entries(pageDetails) as [Page, (typeof pageDetails)[Page]][])
             .map(([page, details]) => (
               <a
                 href={details.href}
                 key={page}
                 aria-current={page === currentPage ? 'page' : undefined}
+                onClick={() => setIsMenuOpen(false)}
               >
                 {details.label}
               </a>
