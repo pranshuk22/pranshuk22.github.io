@@ -206,12 +206,31 @@
 }
 
 @media (max-width: 34rem) {
+  /* Inside the mobile menu the theme picker expands inline instead of floating. */
   .theme-menu {
-    margin-left: auto;
+    width: 100%;
+  }
+
+  .theme-menu summary {
+    width: 100%;
+    justify-content: space-between;
+    min-height: 3rem;
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: var(--text-body);
+    font-weight: 600;
   }
 
   .theme-menu__panel {
-    right: calc(var(--header-item-inset) * -1);
+    position: static;
+    width: 100%;
+    margin-top: var(--space-2);
+    box-shadow: none;
+  }
+
+  .theme-menu:not([open]) .theme-menu__panel {
+    display: none;
   }
 
   /* Keep swatches in a stable grid so each row has predictable edge items. */
