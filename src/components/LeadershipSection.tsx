@@ -16,12 +16,12 @@ function LeadershipSection() {
             <span className="experience-entry__marker" aria-hidden="true" />
 
             <article className="experience-entry__content">
-              <h3 className="experience-entry__title">{role.organization}</h3>
-
-              <div className="experience-entry__meta">
-                <p className="experience-entry__role">{role.role}</p>
+              <div className="experience-entry__heading">
+                <h3 className="experience-entry__title">{role.organization}</h3>
                 <p className="experience-entry__date">{role.date}</p>
               </div>
+
+              <p className="experience-entry__role">{role.role}</p>
 
               <ul className="experience-entry__highlights">
                 {role.highlights.map((highlight) => (
